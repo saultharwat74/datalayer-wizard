@@ -6,10 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
+    "lint:style": "stylelint \"**/*.{css,scss,vue}\" --fix",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,vue,css,scss,json,md}\"",
+    "commit": "cz"
   },
   "dependencies": {
-    "@vueuse/core": "^12.2.0",
+    "@vee-validate/zod": "^4.15.0",
+    "@vueuse/core": "^12.4.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.469.0",
@@ -17,19 +24,42 @@
     "radix-vue": "^1.9.11",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
-    "vue": "^3.5.13"
+    "vee-validate": "^4.15.0",
+    "vue": "^3.5.13",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
     "@crxjs/vite-plugin": "^2.0.0-beta.29",
+    "@eslint/js": "^9.18.0",
     "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
     "@vitejs/plugin-vue": "^5.2.1",
-    "@vue/compiler-sfc": "^3.5.13",
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.20",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.2",
+    "eslint-plugin-vue": "^9.32.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.1",
     "postcss": "^8.4.49",
+    "prettier": "^3.4.2",
+    "stylelint": "^16.13.2",
+    "stylelint-config-standard": "^37.0.0",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.6.2",
     "vite": "^6.0.5",
+    "vue-eslint-parser": "^9.4.3",
     "vue-tsc": "^2.2.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   }
 }
