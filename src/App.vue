@@ -1,11 +1,9 @@
 <script setup lang="ts">
-  import ComingSoonLayout from './layouts/ComingSoonLayout.vue';
+  import MainLayout from '@/layouts/MainLayout.vue';
 </script>
 
 <template>
-  <div class="animated-bg h-screen w-[600px] flex justify-center items-center">
-    <ComingSoonLayout />
-  </div>
+  <MainLayout />
 </template>
 
 <style scoped></style>
