@@ -65,6 +65,7 @@ export default [
             'Parameter',
             'Textarea',
             'modal',
+            'header',
           ],
         },
       ],
