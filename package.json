@@ -17,13 +17,13 @@
   "dependencies": {
     "@vee-validate/zod": "^4.15.0",
     "@vueuse/core": "^12.4.0",
-    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.469.0",
     "pinia": "^2.3.0",
     "radix-vue": "^1.9.11",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^11.0.5",
     "vee-validate": "^4.15.0",
     "vue": "^3.5.13",
     "zod": "^3.24.1"
@@ -34,6 +34,7 @@
     "@crxjs/vite-plugin": "^2.0.0-beta.29",
     "@eslint/js": "^9.18.0",
     "@types/node": "^22.10.2",
+    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.20.0",
     "@typescript-eslint/parser": "^8.20.0",
     "@vitejs/plugin-vue": "^5.2.1",
