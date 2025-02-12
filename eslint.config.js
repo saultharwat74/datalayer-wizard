@@ -75,6 +75,7 @@ export default [
       'prettier/prettier': 'error',
       // Handle unused variables
       'no-unused-vars': 'off',
+      'no-undef': 'off',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
