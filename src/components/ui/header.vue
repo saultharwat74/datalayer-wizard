@@ -7,7 +7,7 @@
 
 <template>
   <div class="flex flex-col gap-2">
-    <div class="flex flex-row justify-between items-center">
+    <div class="flex flex-row justify-between items-center pb-4 border-b border-border">
       <div class="flex items-center gap-2">
         <img
           src="@/assets/logo.png"
@@ -32,7 +32,5 @@
         />
       </button>
     </div>
-
-    <div class="border-b border-gray-200 dark:border-gray-700"></div>
   </div>
 </template>
