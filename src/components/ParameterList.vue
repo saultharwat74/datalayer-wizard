@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  import { useDataLayerStore } from '@/stores/dataLayerStore';
   import { Button } from '@/components/ui/button';
   import { Input } from '@/components/ui/input';
   import { Label } from '@/components/ui/label';
@@ -9,13 +8,12 @@
     AccordionItem,
     AccordionTrigger,
   } from '@/components/ui/accordion';
+  import { useDataLayerStore } from '@/stores/dataLayerStore';
+  import { storeToRefs } from 'pinia';
 
   const store = useDataLayerStore();
-
-  const updateParameter = (index: number, field: 'key' | 'valueSelector', event: Event) => {
-    const value = (event.target as HTMLInputElement).value;
-    store.parameterList[index][field] = value;
-  };
+  const { parameterList, errors } = storeToRefs(store);
+  const { addNewParameter, deleteParameterById, getFieldError } = store;
 </script>
 
 <template>
@@ -26,7 +24,7 @@
         variant="outline"
         size="sm"
         type="button"
-        @click="store.addNewParameter"
+        @click="addNewParameter"
       >
         Add Parameter
       </Button>
@@ -39,8 +37,8 @@
       class="max-h-80 overflow-y-auto space-y-4 border border-gray-200 rounded-lg p-4"
     >
       <AccordionItem
-        v-for="(param, index) in store.parameterList"
-        :key="param.id"
+        v-for="(param, index) in parameterList"
+        :key="param.value.id"
         :value="String(index)"
       >
         <AccordionTrigger class="p-4 hover:no-underline">
@@ -50,28 +48,46 @@
           <div class="grid grid-cols-2 gap-4 p-5 rounded-md dark:bg-slate-800 bg-slate-50">
             <div class="space-y-2">
               <Label>Key</Label>
-              <Input
-                v-model="param.key"
-                placeholder="e.g., product_name"
-                @input="updateParameter(index, 'key', $event)"
-              />
+              <div class="space-y-1">
+                <Input
+                  v-model="param.value.key"
+                  :class="{ 'border-red-500': getFieldError(errors, index, 'key') }"
+                  placeholder="e.g., product_name"
+                  class="w-full"
+                />
+                <span
+                  v-if="getFieldError(errors, index, 'key')"
+                  class="text-red-500 text-xs"
+                >
+                  {{ getFieldError(errors, index, 'key') }}
+                </span>
+              </div>
             </div>
             <div class="space-y-2">
               <Label>Value Selector</Label>
-              <Input
-                v-model="param.valueSelector"
-                placeholder="e.g., .product-price"
-                @input="updateParameter(index, 'valueSelector', $event)"
-              />
+              <div class="space-y-1">
+                <Input
+                  v-model="param.value.valueSelector"
+                  :class="{ 'border-red-500': getFieldError(errors, index, 'valueSelector') }"
+                  placeholder="e.g., .product-price"
+                  class="w-full"
+                />
+                <span
+                  v-if="getFieldError(errors, index, 'valueSelector')"
+                  class="text-red-500 text-xs"
+                >
+                  {{ getFieldError(errors, index, 'valueSelector') }}
+                </span>
+              </div>
             </div>
           </div>
           <Button
-            v-if="store.parameterList.length > 1"
+            v-if="parameterList.length > 1"
             type="button"
             variant="destructive"
             size="sm"
             class="mt-4 w-full"
-            @click="store.deleteParameterById(param.id)"
+            @click="deleteParameterById(param.value.id)"
           >
             Remove Parameter
           </Button>

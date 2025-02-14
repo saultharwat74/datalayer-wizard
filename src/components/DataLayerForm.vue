@@ -1,39 +1,18 @@
 <script setup lang="ts">
-  import { watch } from 'vue';
-  import { Field, useForm } from 'vee-validate';
   import { Card, CardContent } from '@/components/ui/card';
   import { Label } from '@/components/ui/label';
   import { Input } from '@/components/ui/input';
   import { Button } from '@/components/ui/button';
   import { useDataLayerStore } from '@/stores/dataLayerStore';
-  import { toTypedSchema } from '@vee-validate/zod';
-  import { DataLayerFormSchema, type EventLayerForm } from '@/schemas/validation';
   import { Linkedin } from 'lucide-vue-next';
   import DataLayerScriptPreview from './DataLayerScriptPreview.vue';
   import ParameterList from './ParameterList.vue';
+  import { storeToRefs } from 'pinia';
 
   const store = useDataLayerStore();
-
-  const { handleSubmit, setFieldValue } = useForm<EventLayerForm>({
-    validationSchema: toTypedSchema(DataLayerFormSchema),
-    initialValues: {
-      eventName: '',
-      triggerSelector: '',
-      parameterList: store.parameterList,
-    },
-  });
-
-  watch(store.parameterList, (newParams) => {
-    setFieldValue('parameterList', newParams);
-  });
-
-  const onSubmit = handleSubmit((formValues) => {
-    store.generateDataLayerScript({
-      eventName: formValues.eventName,
-      triggerSelector: formValues.triggerSelector,
-      parameterList: store.parameterList,
-    });
-  });
+  const { errors, eventName, eventNameProps, triggerSelector, triggerSelectorProps } =
+    storeToRefs(store);
+  const { onSubmit } = store;
 </script>
 
 <template>
@@ -47,47 +26,38 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <Label for="eventName">Event Name</Label>
-              <Field
-                name="eventName"
-                v-slot="{ field, errors }"
+              <Input
+                v-model="eventName"
+                v-bind="eventNameProps"
+                placeholder="e.g., add-to-cart"
+                :class="{ 'border-red-500': errors.eventName }"
+              />
+              <span
+                v-if="errors.eventName"
+                class="text-red-500 text-sm"
               >
-                <Input
-                  v-bind="field"
-                  placeholder="e.g., add-to-cart"
-                  :class="{ 'border-red-500': errors.length }"
-                />
-                <span
-                  v-if="errors.length"
-                  class="text-red-500 text-sm"
-                >
-                  {{ errors[0] }}
-                </span>
-              </Field>
+                {{ errors.eventName }}
+              </span>
             </div>
 
             <div class="space-y-2">
               <Label for="triggerSelector">Trigger Selector</Label>
-              <Field
-                name="triggerSelector"
-                v-slot="{ field, errors }"
+              <Input
+                v-model="triggerSelector"
+                v-bind="triggerSelectorProps"
+                :class="{ 'border-red-500': errors.triggerSelector }"
+                placeholder="e.g., .add-to-cart-button"
+              />
+              <span
+                class="text-red-500 text-sm"
+                v-if="errors.triggerSelector"
               >
-                <Input
-                  v-bind="field"
-                  :class="{ 'border-red-500': errors.length }"
-                  placeholder="e.g., .add-to-cart-button"
-                />
-                <span
-                  class="text-red-500 text-sm"
-                  v-if="errors.length"
-                >
-                  {{ errors[0] }}
-                </span>
-              </Field>
+                {{ errors.triggerSelector }}
+              </span>
             </div>
           </div>
 
           <ParameterList />
-
           <div class="flex gap-2">
             <Button type="submit"> Generate Event </Button>
             <DataLayerScriptPreview />

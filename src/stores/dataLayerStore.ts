@@ -1,23 +1,35 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import type { Parameter, EventLayerForm } from '@/schemas/validation';
-import { v4 as uuidv4 } from 'uuid';
+import { DataLayerFormSchema, type EventLayerForm, type Parameter } from '@/schemas/validation';
 import { useToast } from '@/components/ui/toast';
-
+import { useFieldArray, useForm } from 'vee-validate';
+import { toTypedSchema } from '@vee-validate/zod';
+import { v4 as uuidv4 } from 'uuid';
 const { toast } = useToast();
 
 export const useDataLayerStore = defineStore('dataLayer', () => {
-  const parameterList = ref<Parameter[]>([
-    {
-      id: uuidv4(),
-      key: '',
-      valueSelector: '',
-    },
-  ]);
   const generatedScript = ref<string>('');
+  const { errors, defineField, handleSubmit, meta } = useForm<EventLayerForm>({
+    validationSchema: toTypedSchema(DataLayerFormSchema),
+    initialValues: {
+      eventName: '',
+      triggerSelector: '',
+      parameterList: [
+        {
+          id: uuidv4(),
+          key: '',
+          valueSelector: '',
+        },
+      ],
+    },
+  });
+
+  const [eventName, eventNameProps] = defineField('eventName');
+  const [triggerSelector, triggerSelectorProps] = defineField('triggerSelector');
+  const { fields: parameterList, push, remove } = useFieldArray<Parameter>('parameterList');
 
   const addNewParameter = () => {
-    parameterList.value.push({
+    push({
       id: uuidv4(),
       key: '',
       valueSelector: '',
@@ -25,9 +37,17 @@ export const useDataLayerStore = defineStore('dataLayer', () => {
   };
 
   const deleteParameterById = (id: string) => {
-    parameterList.value = parameterList.value.filter((param) => param.id !== id);
+    remove(parameterList.value.findIndex((param) => param.value.id === id));
   };
 
+  const getFieldError = (
+    errors: Record<string, string | undefined>,
+    index: number,
+    field: 'key' | 'valueSelector'
+  ) => {
+    const errorKey = `parameterList[${index}].${field}`;
+    return meta.value.touched ? errors[errorKey] || '' : '';
+  };
   const generateDataLayerScript = (formData: EventLayerForm) => {
     const customHTMLTag = `
 <script>
@@ -56,11 +76,26 @@ export const useDataLayerStore = defineStore('dataLayer', () => {
     });
   };
 
+  const onSubmit = handleSubmit((formValues) => {
+    generateDataLayerScript({
+      eventName: formValues.eventName,
+      triggerSelector: formValues.triggerSelector,
+      parameterList: formValues.parameterList,
+    });
+  });
+
   return {
-    parameterList,
     generatedScript,
+    generateDataLayerScript,
+    eventName,
+    eventNameProps,
+    triggerSelector,
+    triggerSelectorProps,
+    parameterList,
+    errors,
     addNewParameter,
     deleteParameterById,
-    generateDataLayerScript,
+    getFieldError,
+    onSubmit,
   };
 });
